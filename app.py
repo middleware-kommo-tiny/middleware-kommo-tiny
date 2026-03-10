@@ -37,7 +37,7 @@ Me mande o print dos logs!
 Nao foi criado proposta no tiny
 Max
 Excelente! Os logs mostram informações muito importantes! O webhook está sendo recebido com sucesso! Vejo:
-Lead obtido: Lead #18681831 ✅
+Lead obtido: Lead #18681831 
 Form data com leads[add][0][id]: '18681831' 
 O middleware está conseguindo extrair o lead_id e buscar o lead
 Mas preciso ver o restante dos logs para entender onde parou. Role para baixo nos logs e me mande mais um print. Quero ver se aparece:
@@ -47,12 +47,12 @@ Algum erro ❌
 Role para baixo e me mande o print do restante dos logs!
 Max
 Agora encontrei o problema! Os logs mostram que o middleware está funcionando muito bem:
-✅ Webhook recebido
-✅ Lead obtido: #18681831
-✅ Campos: pagamento=Cartão, desconto=10%, frete=100
-✅ Cliente: Victor Pedroso
-✅ 2 Produtos encontrados (Poltrona Maca + Mocho)
-✅ Cálculo correto: Subtotal R$32.989, Desconto R$3.298,90, Frete R$100, Total R$29.790,10
+Webhook recebido
+Lead obtido: #18681831
+Campos: pagamento=Cartão, desconto=10%, frete=100
+Cliente: Victor Pedroso
+2 Produtos encontrados (Poltrona Maca + Mocho)
+Cálculo correto: Subtotal R$32.989, Desconto R$3.298,90, Frete R$100, Total R$29.790,10
 O erro acontece na linha update_lead_field(lead_id, CF_ITENS, itens_texto) - ao tentar gravar o campo "Itens" no Kommo, retorna 400 Bad Request. O texto formatado dos itens provavelmente é muito longo ou contém caracteres que o Kommo não aceita nesse campo.
 O middleware parou antes de chegar na criação do Tiny por causa desse erro.
 Vou corrigir o código para:
@@ -506,7 +506,7 @@ def webhook_kommo():
 
         if not produtos:
             logger.warning(f"Nenhum produto vinculado ao lead {lead_id}")
-            add_note_to_lead(lead_id, "⚠️ Nenhum produto vinculado ao lead. Proposta não criada.")
+            add_note_to_lead(lead_id, " Nenhum produto vinculado ao lead. Proposta não criada.")
             return jsonify({"error": "Nenhum produto vinculado ao lead"}), 400
 
         for p in produtos:
@@ -571,14 +571,14 @@ def webhook_kommo():
             # ── 10. Adicionar nota no lead ──
             add_note_to_lead(
                 lead_id,
-                f"✅ Proposta Comercial criada no Tiny!\n"
+                f"Proposta Comercial criada no Tiny!\n"
                 f"Nº: {num_proposta}\n"
                 f"Cliente: {cliente_nome}\n"
                 f"Total: R${total_final:.2f}\n"
                 f"Pagamento: {pagamento or 'Não informado'}"
             )
 
-            logger.info(f"✅ Proposta {num_proposta} criada com sucesso para lead {lead_id}")
+            logger.info(f"Proposta {num_proposta} criada com sucesso para lead {lead_id}")
 
             return jsonify({
                 "status": "success",
@@ -589,12 +589,12 @@ def webhook_kommo():
             })
         else:
             erro = resultado.get("erro", "Erro desconhecido")
-            add_note_to_lead(lead_id, f"❌ Erro ao criar proposta no Tiny: {erro}")
-            logger.error(f"❌ Erro ao criar proposta no Tiny: {erro}")
+            add_note_to_lead(lead_id, f"Erro ao criar proposta no Tiny: {erro}")
+            logger.error(f"Erro ao criar proposta no Tiny: {erro}")
             return jsonify({"error": erro}), 500
 
     except Exception as e:
-        logger.exception(f"❌ Erro no webhook: {e}")
+        logger.exception(f"Erro no webhook: {e}")
         return jsonify({"error": str(e)}), 500
 
 
