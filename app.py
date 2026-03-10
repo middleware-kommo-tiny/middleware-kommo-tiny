@@ -38,7 +38,7 @@ Nao foi criado proposta no tiny
 Max
 Excelente! Os logs mostram informações muito importantes! O webhook está sendo recebido com sucesso! Vejo:
 Lead obtido: Lead #18681831 ✅
-Form data com leads[add][0][id]: '18681831' ✅
+Form data com leads[add][0][id]: '18681831' 
 O middleware está conseguindo extrair o lead_id e buscar o lead
 Mas preciso ver o restante dos logs para entender onde parou. Role para baixo nos logs e me mande mais um print. Quero ver se aparece:
 "Produtos encontrados: X"
